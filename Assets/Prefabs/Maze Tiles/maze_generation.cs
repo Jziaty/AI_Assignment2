@@ -196,7 +196,9 @@ public class maze_generation : MonoBehaviour {
 	public float wallHeight = 3;
 	public float floorSize = 3;
 	public Maze3d m_maze3d;
-	public bool roof = false;
+    public Maze3d m_maze3d2;
+    public Maze3d m_maze3d3;
+    public bool roof = false;
 	public int exitsInFloor = 2;
 	public int exitsInWalls = 2;
 	public bool randFloorExits = true;
@@ -231,9 +233,15 @@ public class maze_generation : MonoBehaviour {
 		dim = floorSize;
 		div_dim = dim / 2.0F;
 		m_maze3d = new Maze3d(heigth, depth, width, exitsInFloor, exitsInWalls);
-		m_maze3d.generate(randWallsExits, randFloorExits);
+        m_maze3d.generate(randWallsExits, randFloorExits);
 		pop_maze_3d(m_maze3d, new Vector3(0, 0, 0));
-	}
+        m_maze3d2 = new Maze3d(heigth, depth, width, exitsInFloor, exitsInWalls);
+        m_maze3d2.generate(randWallsExits, randFloorExits);
+        pop_maze_3d(m_maze3d2, new Vector3(0, 5, 0));
+        m_maze3d3 = new Maze3d(heigth, depth, width, exitsInFloor, exitsInWalls);
+        m_maze3d3.generate(randWallsExits, randFloorExits);
+        pop_maze_3d(m_maze3d3, new Vector3(0, 10, 0));
+    }
 	
 	// Update is called once per frame
 	void Update () {

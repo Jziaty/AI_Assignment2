@@ -43,7 +43,7 @@ public class Player_ClickToMove : MonoBehaviour
 	{
 		//Look to see if we pressed "Fire1" (left mouse, screen touch, trigger, etc). 
 		//If we did, we need to figure out what we clicked or tapped on in the scene
-		if (Input.GetButtonDown ("Fire1")) 
+		if (Input.GetButton ("Fire1")) 
 		{
 			//Create a ray from the main camera through our mouse's position
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
