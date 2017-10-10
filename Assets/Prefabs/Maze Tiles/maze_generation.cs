@@ -63,7 +63,7 @@ public class Maze
 		return true;
 	}
 	
-	public void generate(bool rand_exits, bool rand_floor_exits)
+	public void generate(bool rand_exits, bool rand_floor_exits, int iteration)
 	{
 		int i = 0;
 		
@@ -94,14 +94,15 @@ public class Maze
 			if (ids_all_zero(repl) == true)
 				break;
 		}
-		create_exits(rand_exits, rand_floor_exits);
+		create_exits(rand_exits, rand_floor_exits, iteration);
 	}
 	
-	void create_exits(bool rand_exits, bool rand_floor_exits)
+	void create_exits(bool rand_exits, bool rand_floor_exits, int iteration)
 	{
 		int i = 0;
 		int depth = 0;
 		int width = 0;
+        
 		
 		for (i = 0; i < m_nb_holes && rand_floor_exits; i++){
 			int d = Random.Range(0, m_depth);
@@ -109,6 +110,7 @@ public class Maze
 			if (floor[d,w] == false && m_nb_holes < floor.GetLength(0) * floor.GetLength(1))
 				i--;
 			floor[d,w] = false;
+            
 		}
 		for (i = 0; i < m_nb_holes_in_walls && rand_exits; i++){
 			if (Random.Range(0, 2) == 1)
@@ -134,13 +136,36 @@ public class Maze
 				h_wall[depth, width] = false;
 			}
 		}
-		if (!rand_exits && m_nb_holes_in_walls > 0)
+        
+        //Debug.Log(iteration);
+        if (!rand_exits && m_nb_holes_in_walls > 0)
 			h_wall[0,0] = false;
-		if (!rand_exits && m_nb_holes_in_walls > 1)
+        if (!rand_exits && m_nb_holes_in_walls > 0 && iteration == 2)
+        {
+            h_wall[h_wall.GetLength(0) - 1, h_wall.GetLength(1) - 1] = false;
+        }
+            
+        if (!rand_exits && m_nb_holes_in_walls > 0 && iteration == 3)
+        {
+            h_wall[h_wall.GetLength(0) - 1, h_wall.GetLength(1) - 1] = false;
+            h_wall[0,0] = true;
+        }
+        
+        if (!rand_exits && m_nb_holes_in_walls > 0 && iteration == 2)
+            h_wall[h_wall.GetLength(0) - 1, h_wall.GetLength(1) - 1] = false;
+        if (!rand_exits && m_nb_holes_in_walls > 1)
 			h_wall[h_wall.GetLength(0) - 1, h_wall.GetLength(1) - 1] = false;
+
 		if (!rand_floor_exits && m_nb_holes_in_walls > 0)
 			floor[0,0] = false;
-		if (!rand_floor_exits && m_nb_holes_in_walls > 1)
+        if (!rand_floor_exits && m_nb_holes_in_walls > 0 && iteration == 2)
+            floor[floor.GetLength(0) - 1, floor.GetLength(1) - 1] = false;
+        if (!rand_floor_exits && m_nb_holes_in_walls > 0 && iteration == 3)
+            {
+            floor[floor.GetLength(0) - 1, floor.GetLength(1) - 1] = false;
+            floor[0, 0] = true;
+        }
+        if (!rand_floor_exits && m_nb_holes_in_walls > 1)
 			floor[floor.GetLength(0) - 1, floor.GetLength(1) - 1] = false;
 	}
 }
@@ -166,11 +191,11 @@ public class Maze3d
 		maze = new Maze[height];
 	}
 	
-	public void generate(bool rand_exits, bool rand_floor_exits)
+	public void generate(bool rand_exits, bool rand_floor_exits, int iteration)
 	{
 		for (int i = 0; i < m_height; i++){
 			maze[i] = new Maze(m_depth, m_width, m_nb_holes, m_nb_holes_in_walls);
-			maze[i].generate(rand_exits, rand_floor_exits);
+			maze[i].generate(rand_exits, rand_floor_exits, iteration);
 		}
 		for (int w = 0; w < m_depth; w++){
 			for (int d = 0; d < m_width; d++)
@@ -186,8 +211,10 @@ public class maze_generation : MonoBehaviour {
 	public GameObject horizontalWall;
 	public GameObject verticalWall;
 	public GameObject corner;
+    public GameObject verticalPlateau;
 	public bool generateCorners = true;
 	public bool generateFloors = true;
+    public bool genarateVertplateaus = true;
 	public bool optimiseCorners = true;
 	public GameObject floor;
 	public int width = 10;
@@ -207,9 +234,12 @@ public class maze_generation : MonoBehaviour {
 	float dim;
 	float div_dim;
 	GameObject keyHolder;
+    int iteration = 1;
+    int count = 1;
 
-	// Use this for initialization
-	void Start ()
+
+    // Use this for initialization
+    void Start ()
 	{
 		if (generateAtAwake && Application.isPlaying)
 			generate();
@@ -233,14 +263,17 @@ public class maze_generation : MonoBehaviour {
 		dim = floorSize;
 		div_dim = dim / 2.0F;
 		m_maze3d = new Maze3d(heigth, depth, width, exitsInFloor, exitsInWalls);
-        m_maze3d.generate(randWallsExits, randFloorExits);
+        m_maze3d.generate(randWallsExits, randFloorExits, iteration);
 		pop_maze_3d(m_maze3d, new Vector3(0, 0, 0));
+        iteration++;
         m_maze3d2 = new Maze3d(heigth, depth, width, exitsInFloor, exitsInWalls);
-        m_maze3d2.generate(randWallsExits, randFloorExits);
+        m_maze3d2.generate(randWallsExits, randFloorExits, iteration);
         pop_maze_3d(m_maze3d2, new Vector3(0, 5, 0));
+        iteration++;
         m_maze3d3 = new Maze3d(heigth, depth, width, exitsInFloor, exitsInWalls);
-        m_maze3d3.generate(randWallsExits, randFloorExits);
+        m_maze3d3.generate(randWallsExits, randFloorExits, iteration);
         pop_maze_3d(m_maze3d3, new Vector3(0, 10, 0));
+        iteration++;
     }
 	
 	// Update is called once per frame
@@ -299,6 +332,28 @@ public class maze_generation : MonoBehaviour {
 			}
 		}
 	}
+
+    void pop_vertplat(Maze maze, Vector3 pos)
+    {
+        for (int z = 0; z < maze.floor.GetLength(0) && generateFloors; z++)
+        {
+            for (int x = 0; x < maze.floor.GetLength(1); x++)
+            {
+                /*if (!maze.floor[z, x] && count >= 2)
+                {
+                    pop_maze_part(verticalPlateau, new Vector3(x * dim + div_dim + pos.x, pos.y + (pos.y / 2), z * dim + div_dim + pos.z), Quaternion.Euler(0, 180, 90));
+                }*/
+                if (!maze.floor[z, x])
+                {
+                    pop_maze_part(verticalPlateau, new Vector3(x * dim + div_dim + pos.x, pos.y + (pos.y / 2), z * dim + div_dim + pos.z), Quaternion.Euler(0, 180, 90));
+                    count++;
+                }
+                count++;
+                Debug.Log(count);
+                    
+            }
+        }
+    }
 	
 	void pop_maze_3d(Maze3d maze3d, Vector3 pos)
 	{
@@ -309,7 +364,8 @@ public class maze_generation : MonoBehaviour {
 			pop_maze_2d(maze3d.maze[i], pos);
 			pop_floor(maze3d.maze[i], pos);
 			pop_corner(maze3d.maze[i], pos);
-			pos.y += wallHeight;
+            pop_vertplat(maze3d.maze[i], pos);
+            pos.y += wallHeight;
 		}
 		for (int z = 0; z < maze3d.roof.GetLength(0) && roof; z++){
 			for (int x = 0; x < maze3d.roof.GetLength(1); x++)
