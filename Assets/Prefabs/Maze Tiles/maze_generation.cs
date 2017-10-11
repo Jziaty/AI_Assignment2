@@ -339,14 +339,14 @@ public class maze_generation : MonoBehaviour {
         {
             for (int x = 0; x < maze.floor.GetLength(1); x++)
             {
-                /*if (!maze.floor[z, x] && count >= 2)
+                if (!maze.floor[z, x] && count >= 31)
                 {
-                    pop_maze_part(verticalPlateau, new Vector3(x * dim + div_dim + pos.x, pos.y + (pos.y / 2), z * dim + div_dim + pos.z), Quaternion.Euler(0, 180, 90));
-                }*/
-                if (!maze.floor[z, x])
+                    pop_maze_part(verticalPlateau, new Vector3(x * dim + div_dim + pos.x, pos.y + 2.4f, z * dim + div_dim + pos.z), Quaternion.Euler(0, -45, 90));
+                }
+                if (!maze.floor[z, x] && count <= 30)
                 {
-                    pop_maze_part(verticalPlateau, new Vector3(x * dim + div_dim + pos.x, pos.y + (pos.y / 2), z * dim + div_dim + pos.z), Quaternion.Euler(0, 180, 90));
-                    count++;
+                    pop_maze_part(verticalPlateau, new Vector3(x * dim + div_dim + + pos.x, pos.y + 2.4f, z * dim + div_dim + pos.z), Quaternion.Euler(0, 135, 90));
+                    //count++;
                 }
                 count++;
                 Debug.Log(count);
