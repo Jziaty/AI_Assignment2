@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         agent = GetComponent<NavMeshAgent>();
 		path = new NavMeshPath();
+        BeginChasing();
     }
 
 	public void BeginChasing()
@@ -47,7 +48,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<PlayerExample>().Lose();
+            other.GetComponent<Player>().Lose();
             anim.SetTrigger("Stop");
 			agent.enabled = false;
         }

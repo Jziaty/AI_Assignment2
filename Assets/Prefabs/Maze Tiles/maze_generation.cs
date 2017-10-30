@@ -212,7 +212,8 @@ public class maze_generation : MonoBehaviour {
 	public GameObject verticalWall;
 	public GameObject corner;
     public GameObject verticalPlateau;
-	public bool generateCorners = true;
+    public GameObject Stairs;
+    public bool generateCorners = true;
 	public bool generateFloors = true;
     public bool genarateVertplateaus = true;
 	public bool optimiseCorners = true;
@@ -236,6 +237,7 @@ public class maze_generation : MonoBehaviour {
 	GameObject keyHolder;
     int iteration = 1;
     int count = 1;
+    int stairsAmount = 0;
 
 
     // Use this for initialization
@@ -341,12 +343,22 @@ public class maze_generation : MonoBehaviour {
             {
                 if (!maze.floor[z, x] && count >= 31)
                 {
-                    pop_maze_part(verticalPlateau, new Vector3(x * dim + div_dim + pos.x, pos.y + 2.4f, z * dim + div_dim + pos.z), Quaternion.Euler(0, -45, 90));
+                    if(stairsAmount == 1)
+                    {
+                        pop_maze_part(Stairs, new Vector3(pos.x + 10.625f, 6.825f, pos.z + 12.125f), Quaternion.Euler(0, -90, 0));
+                    }
+                    
                 }
                 if (!maze.floor[z, x] && count <= 30)
                 {
-                    pop_maze_part(verticalPlateau, new Vector3(x * dim + div_dim + + pos.x, pos.y + 2.4f, z * dim + div_dim + pos.z), Quaternion.Euler(0, 135, 90));
+                    if(stairsAmount == 0)
+                    {
+                        pop_maze_part(verticalPlateau, new Vector3(pos.x + 1.875f, pos.y + 1.825f, pos.z + 0.375f), Quaternion.Euler(0, 90, 0));
+                        stairsAmount++;
+                    }
+                    
                     //count++;
+                    
                 }
                 count++;
                 Debug.Log(count);

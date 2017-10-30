@@ -4,33 +4,39 @@ using UnityEngine.AI;
 [DefaultExecutionOrder(-100)]
 public class NavMeshBaker : MonoBehaviour 
 {
-    NavMeshSurface platSurface;
-
 	NavMeshSurface surface;
 
+    bool baked = false;
 
 
-	void Start()
+    void Start()
 	{
 		surface = GetComponent<NavMeshSurface> ();
 		surface.Bake ();
-        platSurface = GameObject.FindGameObjectWithTag("Plateau").GetComponent<NavMeshSurface>();
-        platSurface.Bake();
-
+        baked = true;
 	}
 
 	void Update()
 	{
 		if (Input.GetButtonDown("Fire1"))
         {
-            surface.Bake();
-            platSurface.Bake();
+            if (!baked)
+            {
+                surface.Bake();
+                baked = true;
+            }
+                
+            
         }
 			
 		else if (Input.GetButtonDown("Fire2"))
         {
-            platSurface.RemoveData();
-            surface.RemoveData();
+            if (baked)
+            {
+                surface.RemoveData();
+                baked = false;
+            }
+                
             
         }
 			
